@@ -1,54 +1,87 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
-ttable = [['Інформатика', 'Фізкультура', 'Література', 'Українська мова'],
-['Інформатика', 'Математика', 'Література', 'Географія'],
-['Фізкультура', 'Математика', 'Математика', 'Українська мова'],
-['Математика', 'Інформатика', 'Література', 'Біологія'],
-['Література', 'Математика', 'Інформатика', 'Фізкультура']]
-def index(request):
-    return HttpResponse("Hello!")
-def monday(request):
-    v = ""
-    i = 0
-    while i < len(ttable[0]):
-        v=v+str(i+1)+". "+ttable[0][i]+"<br>"
-        i += 1
+news_list = {"2022":
+                {"10":
+                        {"20":
+["Кабмін призначив Капінуса на посаду голови Пенсійного фонду",
+"Фонд держмайна виставив на продаж спиртзавод за 31 мільйон",
+"На Гаванському мосту у Києві загорівся автомобіль"],
 
-    return HttpResponse("Понедельник:<br><br>"+v)
-def tuesday(request):
-    v = ""
-    i = 0
-    while i < len(ttable[1]):
-        v = v + str(i + 1) + ". " + ttable[1][i] + "<br>"
-        i += 1
+"21":["Сьогодні увесь світ відзначає Міжнародний день рідної мови",
+"У Київській ОДА хочуть зупинити ремонт онкодиспансеру."]
+},
+"11":
+{"30":
+["Створено першу в історії молекулу-транзистор",
+"Компанія Renault у 2022 році готує новинки"]
+}
+},
+"2021":
+{"5":
+{"17":
+["Як знизити цукор у крові: найкращі ягоди при діабеті 2-го типу",
+"Україна звернулась до Радбезу ООН щодо гарантування безпеки"]
+}
+}
+}
 
-    return HttpResponse("Вторник:<br><br>"+v)
-def wednesday(request):
-    v = ""
-    i = 0
-    while i < len(ttable[2]):
-        v = v + str(i + 1) + ". " + ttable[2][i] + "<br>"
-        i += 1
 
-    return HttpResponse("Среда:<br><br>"+v)
-def thursday(request):
-    v = ""
-    i = 0
-    while i < len(ttable[3]):
-        v = v + str(i + 1) + ". " + ttable[3][i] + "<br>"
-        i += 1
+def news(request,rik=0,mis=0,den=0):
+    a=""
+    b=""
+    c=0
+    g=0
+    if (rik==0):
+        for x in news_list:
+            for x2 in news_list[x]:
+                for x3 in news_list[x][x2]:
+                    b=b+x3+"."+x2+"."+x+":<br>"
+                    while c<len(news_list[x][x2][x3]):
+                        b=b+"<li>"+news_list[x][x2][x3][c]+"</li>"
+                        c=c+1
+                    c=0
+        return HttpResponse(b)
+    if (mis == 0):
+        for x in news_list:
+            if (x==str(rik)):
+                for x2 in news_list[x]:
+                    for x3 in news_list[x][x2]:
+                        b=b+x3+"."+x2+"."+x+":<br>"
+                        while c<len(news_list[x][x2][x3]):
+                            b=b+"<li>"+news_list[x][x2][x3][c]+"</li>"
+                            c=c+1
+                        c=0
+        return HttpResponse(b)
+    if (den == 0):
+        for x in news_list:
+            if (x==str(rik)):
+                for x2 in news_list[x]:
+                    if (x2 == str(mis)):
+                        for x3 in news_list[x][x2]:
+                            b=b+x3+"."+x2+"."+x+":<br>"
+                            while c<len(news_list[x][x2][x3]):
+                                b=b+"<li>"+news_list[x][x2][x3][c]+"</li>"
+                                c=c+1
+                            c=0
+        return HttpResponse(b)
+    if (den != 0):
+        for x in news_list:
+            if (x==str(rik)):
+                for x2 in news_list[x]:
+                    if (x2 == str(mis)):
+                        for x3 in news_list[x][x2]:
+                            if (x3 == str(den)):
+                                b = b + x3 + "." + x2 + "." + x + ":<br>"
+                                for x4 in news_list[x][x2][x3]:
+                                    id = request.GET.get("id","-1")
+                                    if (id!="-1" and int(id)<=len(news_list[x][x2][x3])):
+                                        b = b + "<li>" + news_list[x][x2][x3][int(id)-1] + "</li>"
+                                        return HttpResponse(b)
+                                    else:
+                                        while c < len(news_list[x][x2][x3]):
+                                            b = b + "<li>" + news_list[x][x2][x3][c] + "</li>"
+                                            c = c + 1
+                                        return HttpResponse(b)
 
-    return HttpResponse("Четверг:<br><br>"+v)
-def friday(request):
-    v = ""
-    i = 0
-    while i < len(ttable[4]):
-        v = v + str(i + 1) + ". " + ttable[4][i] + "<br>"
-        i += 1
 
-    return HttpResponse("Пятница:<br><br>"+v)
-def saturday(request):
-    return HttpResponse("Суббота:<br><br>Выходной!")
-def sunday(request):
-    return HttpResponse("Воскресенье:<br><br>Выходной!")
